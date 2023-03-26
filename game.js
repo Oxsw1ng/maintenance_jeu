@@ -165,7 +165,7 @@ function create ()
         if (money >= prixSpear) {
             money = money - prixSpear;
             DPS = DPS + spearAmount;
-            prixSpear = prixSpear*2;
+            prixSpear = prixSpear*2.5;
             prixSpear = Math.trunc(prixSpear);
             textButtonSpear.setText("  DPS : +"+ spearAmount+"\n\n Price : "+prixSpear , { fontSize: '15px', fill: '#000000' });
             textDPS.setText("DPS : "+ DPS, { fontSize: '24px', fill: '#DA70D6' });
@@ -181,7 +181,7 @@ function create ()
         if (money >= prixDoubleSword) {
             money = money - prixDoubleSword;
             DPS = DPS + doubleSwordAmount;
-            prixDoubleSword = prixDoubleSword*2;
+            prixDoubleSword = prixDoubleSword*3;
             prixDoubleSword = Math.trunc(prixDoubleSword);
             textButtonDoubleSword.setText("  DPS : +"+ doubleSwordAmount+"\n\n Price : "+prixDoubleSword , { fontSize: '15px', fill: '#000000' });
             textDPS.setText("DPS : "+ DPS, { fontSize: '24px', fill: '#DA70D6' });
