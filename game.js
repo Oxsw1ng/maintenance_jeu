@@ -17,15 +17,36 @@ var vie = 10.0;
 var currVie = vie;
 var clickDamage = 1.0;
 var money = 0.0;
+var currMoney = money;
 var gain = 1.0;
 var level = 1;
 var killCount = 0;
 var DPS = 0;
 
-// Variables visuelles
+// Variables des prix des améliorations
+var prixClick = 5;
+var prixSword = 50;
+var prixAxe = 500;
+var prixSpear = 2000;
+var prixDoubleSword = 5000;
+
+// Variables des valeurs d'améliorations (montant quand amélioré)
+var clickAmount = 1;
+var swordAmount = 1;
+var axeAmount = 5;
+var spearAmount = 50;
+var doubleSwordAmount = 500;
+
+// Variables visuelles (afin de les modifier dans les différentes fonctions)
 var textVie;
 var textCoin;
 var textKill;
+var textLevel;
+var buttonPotion;
+var buttonSword;
+var buttonAxe;
+var buttonSpear;
+var buttonDoubleSword;
 
 function preload ()
 {
@@ -41,6 +62,7 @@ function preload ()
     this.load.image('buttonActive', 'images/buttonA.png');
 }
 
+// Crée la scène
 function create ()
 {
     // SQUELETTE
@@ -74,39 +96,115 @@ function create ()
     // COEUR
     let heart = this.add.image(350,360, "heart");
     heart.setScale(2);
-    textVie = this.add.text(400, 340, vie , { fontSize: '32px', fill: '#F71907' })
-    // ajouter un événement de clic sur le jeu
-    this.input.on('pointerdown', function () {
-        vie = vie - clickDamage; // décrémenter le score
-        textVie.setText(vie); // mettre à jour le texte du score
-    }, this);
+    textVie = this.add.text(400, 340, vie , { fontSize: '32px', fill: '#F71907' });
 
     // KILL COUNT
     textKill = this.add.text(360, 390, killCount+1+"/10" , { fontSize: '32px', fill: '#ffffff' });
 
     // PARTIE GAUCHE
-    let potion = this.add.image(60,230, "potion");
+    // NIVEAU
+    textLevel = this.add.text(20,20, "Level "+level);
+    // DEGATS DE CLICK ET POTION
+    potion = this.add.image(60,230, "potion");
     potion.setScale(2);
-    let buttonPotion = this.add.image(170,230, "buttonInactive");
+    buttonPotion = this.add.image(170,230, "buttonInactive").setInteractive();
     buttonPotion.setScale(0.3);
+    let textButtonPotion = this.add.text(100, 208, "Tap Damage : +"+clickAmount+"\n\n Price : "+prixClick , { fontSize: '15px', fill: '#000000' });
     let textTapDamage = this.add.text(70,275,"Tap Damage : "+clickDamage);
+    buttonPotion.on('pointerdown', function () {
+        if (money >= prixClick) {
+            money = money - prixClick;
+            clickDamage = clickDamage + clickAmount;
+            textTapDamage.setText("Tap Damage : "+clickDamage);
+            prixClick = prixClick*1.3;
+            prixClick = Math.trunc(prixClick);
+            textButtonPotion.setText("Tap Damage : +"+clickAmount+"\n\n Price : "+prixClick , { fontSize: '15px', fill: '#000000' });
+            textCoin.setText(money);
+        }
+    });
 
     // PARTIE DROITE 
-    let sword = this.add.image(750,70,"sword");
-    let buttonSword = this.add.image(640,70, "buttonInactive");
+    // Epee
+    this.add.image(750,70,"sword");
+    buttonSword = this.add.image(640,70, "buttonInactive").setInteractive();
     buttonSword.setScale(0.3);
-    let axe = this.add.image(750,170,"axe");
-    let buttonAxe = this.add.image(640,170, "buttonInactive");
+    let textButtonSword = this.add.text(580, 48, "  DPS : +"+swordAmount+"\n\n Price : "+prixSword , { fontSize: '15px', fill: '#000000' });
+    buttonSword.on('pointerdown', function () {
+        if (money >= prixSword) {
+            money = money - prixSword;
+            DPS = DPS + swordAmount;
+            prixSword = prixSword*1.5;
+            prixSword = Math.trunc(prixSword);
+            textDPS.setText("DPS : "+swordAmount , { fontSize: '15px', fill: '#000000' });
+            textButtonSword.setText("  DPS : +"+ DPS+"\n\n Price : "+prixSword, { fontSize: '24px', fill: '#DA70D6' });
+            textCoin.setText(money);
+        }
+    });
+    // Hache
+    this.add.image(750,170,"axe");
+    buttonAxe = this.add.image(640,170, "buttonInactive").setInteractive();
     buttonAxe.setScale(0.3);
-    let spear = this.add.image(750,270,"spear");
-    let buttonSpear = this.add.image(640,270, "buttonInactive");
+    let textButtonAxe = this.add.text(580, 148, "  DPS : +"+ axeAmount+"\n\n Price : "+prixAxe , { fontSize: '15px', fill: '#000000' });
+    buttonAxe.on('pointerdown', function () {
+        if (money >= prixAxe) {
+            money = money - prixAxe;
+            DPS = DPS + axeAmount;
+            prixAxe = prixAxe*2;
+            prixAxe = Math.trunc(prixAxe);
+            textButtonAxe.setText("  DPS : +"+ axeAmount+"\n\n Price : "+prixAxe , { fontSize: '15px', fill: '#000000' });
+            textDPS.setText("DPS : "+ DPS, { fontSize: '24px', fill: '#DA70D6' });
+            textCoin.setText(money);
+        }
+    });
+    // Lance
+    this.add.image(750,270,"spear");
+    buttonSpear = this.add.image(640,270, "buttonInactive").setInteractive();
     buttonSpear.setScale(0.3);
-    let double_sword = this.add.image(750,370,"double_sword");
-    let buttonDoubleSword = this.add.image(640,370, "buttonInactive");
+    let textButtonSpear = this.add.text(580, 248, "  DPS : +"+ spearAmount+"\n\n Price : "+prixSpear , { fontSize: '15px', fill: '#000000' });
+    buttonSpear.on('pointerdown', function () {
+        if (money >= prixSpear) {
+            money = money - prixSpear;
+            DPS = DPS + spearAmount;
+            prixSpear = prixSpear*2;
+            prixSpear = Math.trunc(prixSpear);
+            textButtonSpear.setText("  DPS : +"+ spearAmount+"\n\n Price : "+prixSpear , { fontSize: '15px', fill: '#000000' });
+            textDPS.setText("DPS : "+ DPS, { fontSize: '24px', fill: '#DA70D6' });
+            textCoin.setText(money);
+        }
+    });
+    // Epee Double
+    this.add.image(750,370,"double_sword");
+    buttonDoubleSword = this.add.image(640,370, "buttonInactive").setInteractive();
     buttonDoubleSword.setScale(0.3);
+    let textButtonDoubleSword = this.add.text(580, 348, "  DPS : +"+ doubleSwordAmount+"\n\n Price : "+prixDoubleSword , { fontSize: '15px', fill: '#000000' });
+    buttonDoubleSword.on('pointerdown', function () {
+        if (money >= prixDoubleSword) {
+            money = money - prixDoubleSword;
+            DPS = DPS + doubleSwordAmount;
+            prixDoubleSword = prixDoubleSword*2;
+            prixDoubleSword = Math.trunc(prixDoubleSword);
+            textButtonDoubleSword.setText("  DPS : +"+ doubleSwordAmount+"\n\n Price : "+prixDoubleSword , { fontSize: '15px', fill: '#000000' });
+            textDPS.setText("DPS : "+ DPS, { fontSize: '24px', fill: '#DA70D6' });
+            textCoin.setText(money);
+        }
+    });
+
+    // EVENEMENT DE CLICK
+    this.input.on('pointerdown', function () {
+        vie = vie - clickDamage; // décrémenter le score
+        textVie.setText(vie); // mettre à jour le texte du score
+    }, this);
+
+    // EVENEMENT DECLENCHE TOUTES LES SECONDES
+    setInterval(() => {
+        vie = vie - DPS;
+        textVie.setText(vie);
+    }, 1000);
+    
 
 }
 
+// Se lance à chaque frame dans le jeu. Utilisé pour vérifier des conditions
 function update () {
     // Si l'ennemi meurt
     if (vie <= 0) {
@@ -116,10 +214,12 @@ function update () {
             // Augmenter la vie des monstres et les gains par kill
             vie = currVie * 1.3;
             vie = Math.trunc(vie);
-            gain = gain * 3;
+            gain = gain * 2;
             gain = Math.trunc(gain);
             currVie = vie;
             killCount=0;
+            level++;
+            textLevel.setText("Level "+level);
         } else {
             vie = currVie;
         }
@@ -127,5 +227,40 @@ function update () {
         textVie.setText(vie);
         money = money + gain;
         textCoin.setText(money); 
+    }
+    // Si la valeur totale de l'argent peut permettre d'acheter une amélioration, affiche le bouton en rouge, sinon en gris
+    // Se déclenche à chaque fois que l'argent augmente ou baisse
+    if (money != currMoney) {
+        // CLICK
+        if (money >= prixClick) {
+            buttonPotion.setTexture("buttonActive");
+        } else {
+            buttonPotion.setTexture("buttonInactive");
+        }
+        // Axe
+        if (money >= prixSword) {
+            buttonSword.setTexture("buttonActive");
+        } else {
+            buttonSword.setTexture("buttonInactive");
+        }
+        // AXE
+        if (money >= prixAxe) {
+            buttonAxe.setTexture("buttonActive");
+        } else {
+            buttonAxe.setTexture("buttonInactive");
+        }
+        // SPEAR
+        if (money >= prixSpear) {
+            buttonSpear.setTexture("buttonActive");
+        } else {
+            buttonSpear.setTexture("buttonInactive");
+        }
+        // DOUBLE SWORD
+        if (money >= prixDoubleSword) {
+            buttonDoubleSword.setTexture("buttonActive");
+        } else {
+            buttonDoubleSword.setTexture("buttonInactive");
+        }
+        currMoney = money;
     }
 }
